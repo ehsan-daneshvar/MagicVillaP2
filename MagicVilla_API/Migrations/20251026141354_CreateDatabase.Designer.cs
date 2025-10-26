@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MagicVilla_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250910152136_ChangeImageUrls2")]
-    partial class ChangeImageUrls2
+    [Migration("20251026141354_CreateDatabase")]
+    partial class CreateDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
