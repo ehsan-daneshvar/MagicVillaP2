@@ -171,6 +171,10 @@ app.UseSwaggerUI(options => {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "Magic_VillaV1");
 });
 
+//Add wwwroot folder to project
+app.UseStaticFiles();
+
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
