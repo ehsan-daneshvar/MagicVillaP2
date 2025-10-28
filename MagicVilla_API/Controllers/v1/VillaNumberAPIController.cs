@@ -37,7 +37,7 @@ namespace MagicVilla_API.Controllers.v1
         [HttpGet(Name = "GetAllVillaNumbers")]
         [ProducesResponseType(statusCode: StatusCodes.Status200OK)]
         [ProducesResponseType(statusCode: StatusCodes.Status404NotFound)]
-        [ResponseCache(Duration = 10)]
+        //[ResponseCache(Duration = 10)]
         public async Task<ActionResult<APIResponse>> GetAllVillaNumbers()
         {
             try
@@ -68,7 +68,7 @@ namespace MagicVilla_API.Controllers.v1
         [ProducesResponseType(statusCode: StatusCodes.Status400BadRequest)]
         [ProducesResponseType(statusCode: StatusCodes.Status404NotFound)]
         [ProducesResponseType(statusCode: StatusCodes.Status200OK)]
-        [ResponseCache(Location =ResponseCacheLocation.None,NoStore =false)]
+        //[ResponseCache(Location =ResponseCacheLocation.None,NoStore =false)]
         public async Task<ActionResult<APIResponse>> GetVillaNumber(int id)
         {
             try
