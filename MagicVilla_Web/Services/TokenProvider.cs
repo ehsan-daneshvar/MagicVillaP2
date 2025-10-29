@@ -24,7 +24,7 @@ namespace MagicVilla_Web.Services
                 bool hasAccessToken = _contextAccessor.HttpContext.Request.Cookies.TryGetValue(SD.AccessToken, out string accessToken);
                 TokenDTO token = new TokenDTO()
                 {
-                    Token = accessToken
+                    AccessToken = accessToken
                 };
                 return hasAccessToken ? token : null;
 
@@ -41,7 +41,7 @@ namespace MagicVilla_Web.Services
             {
                 Expires = DateTime.UtcNow.AddDays(60)
             };
-            _contextAccessor.HttpContext?.Response.Cookies.Append(SD.AccessToken, tokenDTO.Token, cookieOptions);
+            _contextAccessor.HttpContext?.Response.Cookies.Append(SD.AccessToken, tokenDTO.AccessToken, cookieOptions);
         }
     }
 }
