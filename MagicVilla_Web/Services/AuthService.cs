@@ -24,7 +24,7 @@ namespace MagicVilla_Web.Services
                 ApiType = SD.ApiType.POST,
                 Data = obj,
                 Url = villaUrl + "/api/UsersAuth/login"
-            });
+            },withBearer:false);
         }
 
         public Task<T> RegisterAsync<T>(RegisterationRequestDTO obj)
@@ -34,7 +34,7 @@ namespace MagicVilla_Web.Services
                 ApiType = SD.ApiType.POST,
                 Data = obj,
                 Url = villaUrl + "/api/UsersAuth/register"
-            });
+            }, withBearer: false);
         }
     }
 }

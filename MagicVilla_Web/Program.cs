@@ -11,7 +11,7 @@ builder.Services.AddControllersWithViews();
 //AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 
-
+builder.Services.AddScoped<IBaseService,BaseService>();
 builder.Services.AddHttpClient<IVillaService, VillaService>();
 builder.Services.AddScoped<IVillaService, VillaService>();
 builder.Services.AddScoped<ITokenProvider,TokenProvider>();
