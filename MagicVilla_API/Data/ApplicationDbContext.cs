@@ -79,5 +79,6 @@ namespace MagicVilla_API.Data
         public DbSet<VillaNumber> VillaNumbers { get; set; }
         public DbSet<LocalUser> LocalUsers { get; set; }
         public DbSet<ApplicationUser> applicationUsers { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }
