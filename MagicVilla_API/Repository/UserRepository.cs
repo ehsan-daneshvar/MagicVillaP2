@@ -124,6 +124,21 @@ namespace MagicVilla_API.Repository
             var tokenStr = tokenHandler.WriteToken(token);
             return tokenStr;
         }
+        private async Task<string> CreateNewRefreshToken(string userId, string tokenId)
+        {
+            RefreshToken refreshToken = new()
+            {
+                IsValid = true,
+                UserId = userId,
+                JwtTokenId = tokenId,
+                ExpiresAt = DateTime.UtcNow.AddMinutes(3),
+                Refresh_Token = Guid.NewGuid() + "-" + Guid.NewGuid(),
+            };
+
+            await _db.RefreshTokens.AddAsync(refreshToken);
+            await _db.SaveChangesAsync();
+            return refreshToken.Refresh_Token;
+        }
 
         //Todo: Review This Code
         public async Task<TokenDTO> RefreshAccessToken(TokenDTO tokenDTO)
@@ -185,21 +200,6 @@ namespace MagicVilla_API.Repository
                 RefreshToken = newRefreshToken,
             };
 
-        }
-        private async Task<string> CreateNewRefreshToken(string userId, string tokenId)
-        {
-            RefreshToken refreshToken = new()
-            {
-                IsValid = true,
-                UserId = userId,
-                JwtTokenId = tokenId,
-                ExpiresAt = DateTime.UtcNow.AddMinutes(3),
-                Refresh_Token = Guid.NewGuid() + "-" + Guid.NewGuid(),
-            };
-
-            await _db.RefreshTokens.AddAsync(refreshToken);
-            await _db.SaveChangesAsync();
-            return refreshToken.Refresh_Token;
         }
         private (bool isSuccessful, string userId, string tokenId) GetAccessTokenData(string accessToken)
         {
