@@ -81,11 +81,6 @@ namespace MagicVilla_API.Repository
                 var result = await _userManager.CreateAsync(user, registerationRequestDTO.Password);
                 if (result.Succeeded)
                 {
-                    //if (!_roleManager.RoleExistsAsync("admin").GetAwaiter().GetResult())
-                    //{
-                    //    await _roleManager.CreateAsync(new IdentityRole("admin"));
-                    //    await _roleManager.CreateAsync(new IdentityRole("customer"));
-                    //}
                     if (!_roleManager.RoleExistsAsync(registerationRequestDTO.Role).GetAwaiter().GetResult())
                     {
                         await _roleManager.CreateAsync(new IdentityRole(registerationRequestDTO.Role));
@@ -121,7 +116,7 @@ namespace MagicVilla_API.Repository
                     new Claim(JwtRegisteredClaimNames.Jti, jwtTokenId),
                     new Claim(JwtRegisteredClaimNames.Sub, user.Id)
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(60),
+                Expires = DateTime.UtcNow.AddMinutes(1),
                 SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -148,15 +143,25 @@ namespace MagicVilla_API.Repository
             {
                 existingRefreshToken.IsValid = false;
                 _db.SaveChanges();
+                return new TokenDTO();
             }
 
             // When someone tries to use not valid refresh token, fraud possible
+            if (!existingRefreshToken.IsValid)
+            {
+                var chainRecords = _db.RefreshTokens.Where(u => u.UserId == existingRefreshToken.UserId
+                    && u.JwtTokenId == existingRefreshToken.JwtTokenId)
+                    .ExecuteUpdate(u => u.SetProperty(refreshToken => refreshToken.IsValid, false));
+
+                return new TokenDTO();
+            }
 
             // If just expired then mark as invalid and return empty
             if (existingRefreshToken.ExpiresAt < DateTime.UtcNow)
             {
                 existingRefreshToken.IsValid = false;
                 _db.SaveChanges();
+                return new TokenDTO();
             }
 
             // replace old refresh with a new one with updated expire date
@@ -188,7 +193,7 @@ namespace MagicVilla_API.Repository
                 IsValid = true,
                 UserId = userId,
                 JwtTokenId = tokenId,
-                ExpiresAt = DateTime.UtcNow.AddDays(30),
+                ExpiresAt = DateTime.UtcNow.AddMinutes(3),
                 Refresh_Token = Guid.NewGuid() + "-" + Guid.NewGuid(),
             };
 
