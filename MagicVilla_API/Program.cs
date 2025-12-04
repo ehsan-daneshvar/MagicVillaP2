@@ -125,5 +125,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+//auto migration apply
+app.ApplyMigration();
 
 app.Run();
+
