@@ -1,6 +1,7 @@
 ﻿
 using MagicVilla_Utility;
 using MagicVilla_Web.Models;
+using MagicVilla_Web.Services.IServices;
 using Newtonsoft.Json;
 using System.Text;
 using static MagicVilla_Utility.SD;
