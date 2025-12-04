@@ -108,12 +108,28 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-app.UseSwagger();
-app.UseSwaggerUI(options => {
-    //Add Version
-    options.SwaggerEndpoint("/swagger/v2/swagger.json", "Magic_VillaV2");
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Magic_VillaV1");
-});
+//app.UseSwagger();
+//app.UseSwaggerUI(options => {
+//    //Add Version
+//    options.SwaggerEndpoint("/swagger/v2/swagger.json", "Magic_VillaV2");
+//    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Magic_VillaV1");
+//});
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwaggerUI(options => {
+        options.SwaggerEndpoint("/swagger/v2/swagger.json", "Magic_VillaV2");
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Magic_VillaV1");
+    });
+}
+else
+{
+    app.UseSwaggerUI(options => {
+        options.SwaggerEndpoint("/swagger/v2/swagger.json", "Magic_VillaV2");
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Magic_VillaV1");
+        options.RoutePrefix = "";
+    });
+}
 
 //Add wwwroot folder to project
 app.UseStaticFiles();
