@@ -1,18 +1,22 @@
-
+﻿
 
 using MagicVilla_API;
 using MagicVilla_API.Data;
+using MagicVilla_API.Extentions;
+using MagicVilla_API.Filters;
 using MagicVilla_API.Models;
 using MagicVilla_API.Repository;
 using MagicVilla_API.Repository.IRepository;
 using MagicVilla_VillaAPI.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 
@@ -32,7 +36,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
 });
 //Identity
-builder.Services.AddIdentity<ApplicationUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
 
 //AutoMapper
@@ -46,7 +50,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddResponseCaching();
 
 // Versioning
-builder.Services.AddApiVersioning(options => {
+builder.Services.AddApiVersioning(options =>
+{
     options.AssumeDefaultVersionWhenUnspecified = true;
     options.DefaultApiVersion = new ApiVersion(1, 0);
     options.ReportApiVersions = true;
@@ -96,8 +101,22 @@ builder.Services.AddControllers(option =>
             Duration = 60
         });
 
+    // Add Custom Exception Filter to controller
+    option.Filters.Add<CustomExceptionFilter>();
+
 }
-).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
+).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters().ConfigureApiBehaviorOptions(options =>
+    {
+        // ConfigureApiBehaviorOptions برای افزودن لینک برای ارور هندلینگ اضافه شده
+        options.ClientErrorMapping[StatusCodes.Status500InternalServerError] = new ClientErrorData
+        {
+            Link = "link for documnet my error"
+        };
+    }
+);
+
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 //SwaggerGenOptions
@@ -117,19 +136,34 @@ app.UseSwagger();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwaggerUI(options => {
+    app.UseSwaggerUI(options =>
+    {
         options.SwaggerEndpoint("/swagger/v2/swagger.json", "Magic_VillaV2");
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "Magic_VillaV1");
     });
 }
 else
 {
-    app.UseSwaggerUI(options => {
+    app.UseSwaggerUI(options =>
+    {
         options.SwaggerEndpoint("/swagger/v2/swagger.json", "Magic_VillaV2");
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "Magic_VillaV1");
         options.RoutePrefix = "";
+        //اگر بخواهیم روی ویژوال استادیو روی محیط محصول اجرا بگیریم باید کد بالا کامنت شود
     });
 }
+
+//Add Exception Handler in Controller
+app.UseExceptionHandler("/ErrorHandling/ProcessError");
+
+//Add  Exception handler inside program.cs
+app.HandleError(app.Environment.IsDevelopment());
+
+
+
+
+
+
 
 //Add wwwroot folder to project
 app.UseStaticFiles();

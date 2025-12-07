@@ -106,5 +106,17 @@ namespace MagicVilla_API.Controllers.v1
             _response.Result = "Invalid Input";
             return BadRequest(_response);
         }
-    }
+
+        [HttpGet("FirstErrorProducer")]
+        public async Task<IActionResult> ErrorOne()
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet("SecondErrorProducer")]
+        public async Task<IActionResult> ErrorTwo()
+        {
+            throw new BadImageFormatException();
+        }
+    } 
 }
