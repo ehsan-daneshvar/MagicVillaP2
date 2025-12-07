@@ -4,6 +4,7 @@ using MagicVilla_API;
 using MagicVilla_API.Data;
 using MagicVilla_API.Extentions;
 using MagicVilla_API.Filters;
+using MagicVilla_API.Middlewares;
 using MagicVilla_API.Models;
 using MagicVilla_API.Repository;
 using MagicVilla_API.Repository.IRepository;
@@ -153,15 +154,16 @@ else
     });
 }
 
-//Add Exception Handler in Controller
-app.UseExceptionHandler("/ErrorHandling/ProcessError");
+//3 way to error handling
 
-//Add  Exception handler inside program.cs
-app.HandleError(app.Environment.IsDevelopment());
+//1-Add Exception Handler in Controller
+//app.UseExceptionHandler("/ErrorHandling/ProcessError");
 
+//2-Add  Exception handler inside program.cs
+//app.HandleError(app.Environment.IsDevelopment());
 
-
-
+//3-Add Middleware
+app.UseMiddleware<CustomExceptionMiddleware>();
 
 
 
