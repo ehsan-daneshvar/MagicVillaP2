@@ -80,6 +80,7 @@ namespace MagicVilla_API.Controllers.v1
                     _logger.LogError("Getting All Villas With Error And Id:" + id);
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
+
                 }
 
                 var Villa = await _dbVilla.GetAsync(u => u.Id == id);
